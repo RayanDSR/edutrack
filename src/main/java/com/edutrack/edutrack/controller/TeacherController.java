@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edutrack.edutrack.model.Teacher;
 import com.edutrack.edutrack.service.TeacherService;
-import com.edutrack.model.Teacher;
 
 @RestController
 @RequestMapping("/teachers")

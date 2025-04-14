@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.exception.CourseNotFoundException;
+import com.edutrack.edutrack.model.Course;
 import com.edutrack.edutrack.repository.CourseRepository;
-import com.edutrack.model.Course;
 
 @Service
 public class CourseService {

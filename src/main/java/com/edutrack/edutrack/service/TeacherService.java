@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.exception.TeacherNotFoundException;
+import com.edutrack.edutrack.model.Teacher;
 import com.edutrack.edutrack.repository.TeacherRepository;
-import com.edutrack.model.Teacher;
 
 @Service
 public class TeacherService {

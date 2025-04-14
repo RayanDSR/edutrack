@@ -1,4 +1,4 @@
-package com.edutrack.model;
+package com.edutrack.edutrack.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

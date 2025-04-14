@@ -1,8 +1,9 @@
 package com.edutrack.edutrack.controller;
 
-import com.edutrack.edutrack.exception.CourseNotFoundException;
+import com.edutrack.edutrack.service.CourseService;
 import com.edutrack.model.Course;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,55 +12,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @RestController
 public class CourseController {
-    private List<Course> courses = new ArrayList<>();
-    private Long courseIdCounter = 1L;
+    private final CourseService courseService;
 
-    public CourseController() {
-        courses.add(new Course(courseIdCounter++, "Intro to Java", "Learn the basics of Java programming"));
-        courses.add(new Course(courseIdCounter++, "Spring Boot 101", "Get started with Spring Boot"));
-        courses.add(new Course(courseIdCounter++, "MySQL for Beginners", "Learn how to use MySQL with Java"));
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     @GetMapping("/courses")
     public List<Course> getAllCourses() {
-        return courses;
+        return courseService.getAllCourses();
+    }
+
+    @GetMapping("/courses/{id}")
+    public Course getAllCourses(@PathVariable Long id) {
+        return courseService.getCourse(id);
     }
 
     @PostMapping("/courses")
     public Course createCourse(@RequestBody Course newCourse) {
-        newCourse.setId(courseIdCounter++);
-        courses.add(newCourse);
-        return newCourse;
+        return courseService.createCourse(newCourse);
     }
 
     @PutMapping("/courses/{id}")
     public Course updateCourse(@PathVariable Long id, @RequestBody Course updatedCourse) {
-        for (Course course : courses) {
-            if (course.getId().equals(id)) {
-                course.setTitle(updatedCourse.getTitle());
-                course.setDescription(updatedCourse.getDescription());
-                return course;
-            }
-        }
-        throw new CourseNotFoundException(id);
+        return courseService.updateCourse(id, updatedCourse);
     }
 
     @DeleteMapping("/courses/{id}")
-    public String deleteCourse(@PathVariable Long id) {
-        Iterator<Course> iterator = courses.iterator();
-        while (iterator.hasNext()) {
-            Course course = iterator.next();
-            if (course.getId().equals(id)) {
-                iterator.remove();
-                return "Course deleted successfully";
-            }
-        }
-        throw new CourseNotFoundException(id);
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
+        return ResponseEntity.noContent().build();
     }
 }

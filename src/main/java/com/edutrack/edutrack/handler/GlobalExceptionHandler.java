@@ -6,11 +6,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.edutrack.edutrack.exception.CourseNotFoundException;
+import com.edutrack.edutrack.exception.TeacherNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(CourseNotFoundException.class)
     public ResponseEntity<String> handleCourseNotFound(CourseNotFoundException ex) {
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TeacherNotFoundException.class)
+    public ResponseEntity<String> handleTeacherNotFound(TeacherNotFoundException ex) {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 

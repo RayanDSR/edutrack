@@ -1,12 +1,12 @@
 package com.edutrack.edutrack.service;
 
-import com.edutrack.edutrack.exception.CourseNotFoundException;
-import com.edutrack.edutrack.repository.CourseRepository;
-import com.edutrack.model.Course;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.edutrack.edutrack.exception.CourseNotFoundException;
+import com.edutrack.edutrack.repository.CourseRepository;
+import com.edutrack.model.Course;
 
 @Service
 public class CourseService {

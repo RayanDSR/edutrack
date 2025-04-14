@@ -1,5 +1,6 @@
 package com.edutrack.edutrack.controller;
 
+import com.edutrack.edutrack.exception.CourseNotFoundException;
 import com.edutrack.model.Course;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,7 +47,7 @@ public class CourseController {
                 return course;
             }
         }
-        throw new RuntimeException("Course not found with ID: " + id);
+        throw new CourseNotFoundException(id);
     }
 
     @DeleteMapping("/courses/{id}")
@@ -59,6 +60,6 @@ public class CourseController {
                 return "Course deleted successfully";
             }
         }
-        throw new RuntimeException("Course not found with ID: " + id);
+        throw new CourseNotFoundException(id);
     }
 }

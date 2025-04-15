@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.exception.TeacherNotFoundException;
+import com.edutrack.edutrack.model.Course;
 import com.edutrack.edutrack.model.Teacher;
 import com.edutrack.edutrack.repository.TeacherRepository;
 
@@ -30,12 +31,28 @@ public class TeacherService {
 
     public Teacher updateTeacher(Long id, Teacher teacherDetails) {
         Teacher teacher = getTeacher(id);
-        teacher.setName(teacherDetails.getName());
-        teacher.setEmail(teacherDetails.getEmail());
+
+        if (teacherDetails.getName() != null) {
+            teacher.setName(teacherDetails.getName());
+        }
+
+        if (teacherDetails.getEmail() != null) {
+            teacher.setEmail(teacherDetails.getEmail());
+        }
+
+        if (teacherDetails.getCourses() != null) {
+            teacher.setCourses(teacherDetails.getCourses());
+        }
+
         return teacherRepository.save(teacher);
     }
 
     public void deleteTeacher(Long id) {
         teacherRepository.deleteById(id);
+    }
+
+    public List<Course> getCoursesForTeacher(Long teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new TeacherNotFoundException(teacherId));
+        return teacher.getCourses();
     }
 }

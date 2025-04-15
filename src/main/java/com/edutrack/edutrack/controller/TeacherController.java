@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edutrack.edutrack.model.Course;
 import com.edutrack.edutrack.model.Teacher;
 import com.edutrack.edutrack.service.TeacherService;
 
@@ -48,5 +49,10 @@ public class TeacherController {
     public ResponseEntity<Void> deleteTeacher(@PathVariable Long id) {
         teacherService.deleteTeacher(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/courses")
+    public List<Course> getCoursesByTeacher(@PathVariable Long id) {
+        return teacherService.getCoursesForTeacher(id);
     }
 }

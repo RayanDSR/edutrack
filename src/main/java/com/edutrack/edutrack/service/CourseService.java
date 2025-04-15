@@ -4,55 +4,65 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.edutrack.edutrack.dto.CourseDTO;
+import com.edutrack.edutrack.dto.CourseRequestDTO;
+import com.edutrack.edutrack.dto.TeacherDTO;
 import com.edutrack.edutrack.exception.CourseNotFoundException;
+import com.edutrack.edutrack.exception.TeacherNotFoundException;
 import com.edutrack.edutrack.model.Course;
 import com.edutrack.edutrack.model.Teacher;
 import com.edutrack.edutrack.repository.CourseRepository;
+import com.edutrack.edutrack.repository.TeacherRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CourseService {
     private final CourseRepository courseRepository;
+    private final TeacherRepository teacherRepository;
 
-    public CourseService(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
+    public List<CourseDTO> getAllCourses() {
+        return courseRepository.findAll().stream()
+            .map(CourseDTO::new)
+            .toList();
     }
 
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public CourseDTO getCourse(Long id) {
+        return new CourseDTO(courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id)));
     }
 
-    public Course getCourse(Long id) {
-        return courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
+    public CourseDTO createCourse(CourseRequestDTO request) {
+        Teacher teacher = teacherRepository.findById(request.getTeacherId())
+            .orElseThrow(() -> new TeacherNotFoundException(request.getTeacherId()));
+
+        Course course = new Course();
+        course.setTitle(request.getTitle());
+        course.setDescription(request.getDescription());
+        course.setTeacher(teacher);
+
+        return new CourseDTO(courseRepository.save(course));
     }
 
-    public Course createCourse(Course course) {
-        return courseRepository.save(course);
-    }
+    public CourseDTO updateCourse(Long id, CourseRequestDTO request) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
 
-    public Course updateCourse(Long id, Course courseDetails) {
-        Course course = getCourse(id);
+        Teacher teacher = teacherRepository.findById(request.getTeacherId())
+            .orElseThrow(() -> new TeacherNotFoundException(request.getTeacherId()));
 
-        if (courseDetails.getTitle() != null) {
-            course.setTitle(courseDetails.getTitle());
-        }
+        course.setTitle(request.getTitle());
+        course.setDescription(request.getDescription());
+        course.setTeacher(teacher);
 
-        if (courseDetails.getDescription() != null) {
-            course.setDescription(courseDetails.getDescription());
-        }
-
-        if (courseDetails.getTeacher() != null) {
-            course.setTeacher(courseDetails.getTeacher());
-        }
-
-        return courseRepository.save(course);
+        return new CourseDTO(courseRepository.save(course));
     }
 
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
     }
 
-    public Teacher getTeacherForCourse(Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
-        return course.getTeacher();
+    public TeacherDTO getTeacherForCourse(Long id) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
+        return new TeacherDTO(course.getTeacher());
     }
 }

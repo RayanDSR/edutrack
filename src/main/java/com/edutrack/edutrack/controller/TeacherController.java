@@ -1,7 +1,6 @@
 package com.edutrack.edutrack.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,38 +14,36 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edutrack.edutrack.dto.CourseDTO;
 import com.edutrack.edutrack.dto.TeacherDTO;
-import com.edutrack.edutrack.model.Teacher;
+import com.edutrack.edutrack.dto.TeacherRequestDTO;
 import com.edutrack.edutrack.service.TeacherService;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/teachers")
 public class TeacherController {
     private final TeacherService teacherService;
 
-    public TeacherController(TeacherService teacherService) {
-        this.teacherService = teacherService;
-    }
-
     @GetMapping
     public List<TeacherDTO> getAllTeachers() {
-        return teacherService.getAllTeachers().stream()
-            .map(TeacherDTO::new)
-            .collect(Collectors.toList());
+        return teacherService.getAllTeachers();
     }
 
     @GetMapping("/{id}")
     public TeacherDTO getTeacherById(@PathVariable Long id) {
-        return new TeacherDTO(teacherService.getTeacher(id));
+        return teacherService.getTeacher(id);
     }
 
     @PostMapping
-    public TeacherDTO createTeacher(@RequestBody Teacher newTeacher) {
-        return new TeacherDTO(teacherService.createTeacher(newTeacher));
+    public TeacherDTO createTeacher(@Valid @RequestBody TeacherRequestDTO newTeacher) {
+        return teacherService.createTeacher(newTeacher);
     }
 
     @PutMapping("/{id}")
-    public TeacherDTO updateTeacher(@PathVariable Long id, @RequestBody Teacher updatedTeacher) {
-        return new TeacherDTO(teacherService.updateTeacher(id, updatedTeacher));
+    public TeacherDTO updateTeacher(@PathVariable Long id, @Valid @RequestBody TeacherRequestDTO updatedTeacher) {
+        return teacherService.updateTeacher(id, updatedTeacher);
     }
 
     @DeleteMapping("/{id}")
@@ -57,8 +54,6 @@ public class TeacherController {
 
     @GetMapping("/{id}/courses")
     public List<CourseDTO> getCoursesByTeacher(@PathVariable Long id) {
-        return teacherService.getCoursesForTeacher(id).stream()
-            .map(CourseDTO::new)
-            .collect(Collectors.toList());
+        return teacherService.getCoursesForTeacher(id);
     }
 }

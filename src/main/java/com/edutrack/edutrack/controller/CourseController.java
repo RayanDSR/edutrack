@@ -1,7 +1,6 @@
 package com.edutrack.edutrack.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,39 +13,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edutrack.edutrack.dto.CourseDTO;
+import com.edutrack.edutrack.dto.CourseRequestDTO;
 import com.edutrack.edutrack.dto.TeacherDTO;
-import com.edutrack.edutrack.model.Course;
 import com.edutrack.edutrack.service.CourseService;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/courses")
 public class CourseController {
     private final CourseService courseService;
 
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
-    }
-
     @GetMapping
     public List<CourseDTO> getAllCourses() {
-        return courseService.getAllCourses().stream()
-            .map(CourseDTO::new)
-            .collect(Collectors.toList());
+        return courseService.getAllCourses();
     }
 
     @GetMapping("/{id}")
     public CourseDTO getCourseById(@PathVariable Long id) {
-        return new CourseDTO(courseService.getCourse(id));
+        return courseService.getCourse(id);
     }
 
     @PostMapping
-    public CourseDTO createCourse(@RequestBody Course newCourse) {
-        return new CourseDTO(courseService.createCourse(newCourse));
+    public CourseDTO createCourse(@Valid @RequestBody CourseRequestDTO newCourse) {
+        return courseService.createCourse(newCourse);
     }
 
     @PutMapping("/{id}")
-    public CourseDTO updateCourse(@PathVariable Long id, @RequestBody Course updatedCourse) {
-        return new CourseDTO(courseService.updateCourse(id, updatedCourse));
+    public CourseDTO updateCourse(@PathVariable Long id, @Valid @RequestBody CourseRequestDTO updatedCourse) {
+        return courseService.updateCourse(id, updatedCourse);
     }
 
     @DeleteMapping("/{id}")
@@ -57,6 +54,6 @@ public class CourseController {
 
     @GetMapping("/{id}/teacher")
     public TeacherDTO getTeacherByCourse(@PathVariable Long id) {
-        return new TeacherDTO(courseService.getTeacherForCourse(id));
+        return courseService.getTeacherForCourse(id);
     }
 }

@@ -1,4 +1,4 @@
-package com.edutrack.edutrack.handler;
+package com.edutrack.edutrack.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,9 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.edutrack.edutrack.exception.CourseNotFoundException;
-import com.edutrack.edutrack.exception.TeacherNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

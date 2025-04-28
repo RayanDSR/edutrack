@@ -21,6 +21,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<String> handleTeacherNotFound(UserAlreadyExistsException ex) {
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleOtherException(Exception ex) {
         return new ResponseEntity<String>("Something went wrong: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

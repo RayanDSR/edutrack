@@ -1,6 +1,6 @@
 package com.edutrack.edutrack.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.edutrack.edutrack.model.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
-    @JsonProperty("access_token")
-    private String accessToken;
+public class RegisterRequest {
+    private String name;
+    private String email;
+    private String password;
+    private Role role;
 }

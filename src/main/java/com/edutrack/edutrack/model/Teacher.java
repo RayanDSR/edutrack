@@ -29,4 +29,8 @@ public class Teacher {
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private List<Course> courses = new ArrayList<>();
+
+    // @OneToOne
+    // @JoinColumn(name = "user_id")
+    // private User user;
 }

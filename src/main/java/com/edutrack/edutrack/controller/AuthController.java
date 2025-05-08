@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edutrack.edutrack.dto.AuthRequest;
 import com.edutrack.edutrack.dto.AuthResponse;
+import com.edutrack.edutrack.dto.RefreshTokenRequest;
 import com.edutrack.edutrack.dto.RegisterRequest;
 import com.edutrack.edutrack.service.AuthService;
 
@@ -27,5 +28,10 @@ public class AuthController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.authenticate(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refreshToken(request));
     }
 }

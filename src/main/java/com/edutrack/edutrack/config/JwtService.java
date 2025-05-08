@@ -20,6 +20,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
     private static final String SECRET_KEY = "46288437613044114d21e7fad79837c12336202f4c85008548fb226693426f56"; // Example
     private static final long jwtExpiration = 86400000; // 1 Day
+    private static final long jwtRefreshToken = 604800000; // 7 Days
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -32,6 +33,10 @@ public class JwtService {
 
     public String generateToken(User userDetails) {
         return generateToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateRefreshToken(User userDetails) {
+        return buildToken(new HashMap<>(), userDetails, jwtRefreshToken);
     }
 
     public String generateToken(Map<String, Object> extraClaims, User userDetails) {

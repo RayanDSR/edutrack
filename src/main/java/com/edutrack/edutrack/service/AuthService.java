@@ -10,6 +10,7 @@ import com.edutrack.edutrack.dto.AuthRequest;
 import com.edutrack.edutrack.dto.AuthResponse;
 import com.edutrack.edutrack.dto.RefreshTokenRequest;
 import com.edutrack.edutrack.dto.RegisterRequest;
+import com.edutrack.edutrack.exception.InvalidTokenException;
 import com.edutrack.edutrack.exception.UserAlreadyExistsException;
 import com.edutrack.edutrack.model.Token;
 import com.edutrack.edutrack.model.TokenType;
@@ -81,14 +82,15 @@ public class AuthService {
         String refreshToken = request.getRefreshToken();
         String userEmail = jwtService.extractUsername(refreshToken);
 
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
+        User user = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new InvalidTokenException("Invalid refresh token"));
 
         var isTokenValid = tokenRepository.findByToken(refreshToken)
             .map(t -> !t.isExpired() && !t.isRevoked() && t.getTokenType().equals(TokenType.REFRESH))
             .orElse(false);
 
         if (!jwtService.isTokenValid(refreshToken, user) || !isTokenValid) {
-            throw new IllegalArgumentException("Invalid refresh token");
+            throw new InvalidTokenException("Invalid refresh token");
         }
 
         String newAccessToken = jwtService.generateToken(user);

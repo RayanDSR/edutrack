@@ -30,9 +30,10 @@ public class TeacherService {
     }
 
     public TeacherDTO createTeacher(TeacherRequestDTO request) {
-        Teacher teacher = new Teacher();
-        teacher.setName(request.getName());
-        teacher.setEmail(request.getEmail());
+        Teacher teacher = Teacher.builder()
+            .name(request.getName())
+            .email(request.getEmail())
+            .build();
 
         return new TeacherDTO(teacherRepository.save(teacher));
     }

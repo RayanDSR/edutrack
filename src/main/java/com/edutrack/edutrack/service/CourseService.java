@@ -36,10 +36,11 @@ public class CourseService {
         Teacher teacher = teacherRepository.findById(request.getTeacherId())
             .orElseThrow(() -> new TeacherNotFoundException(request.getTeacherId()));
 
-        Course course = new Course();
-        course.setTitle(request.getTitle());
-        course.setDescription(request.getDescription());
-        course.setTeacher(teacher);
+        Course course = Course.builder()
+            .title(request.getTitle())
+            .description(request.getDescription())
+            .teacher(teacher)
+            .build();
 
         return new CourseDTO(courseRepository.save(course));
     }

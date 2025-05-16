@@ -1,6 +1,6 @@
 package com.edutrack.edutrack.dto;
 
-import com.edutrack.edutrack.model.Teacher;
+import com.edutrack.edutrack.model.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TeacherDTO {
+public class UserResponseDTO {
+
     private Long id;
+
     private String name;
+
     private String email;
 
-    public TeacherDTO(Teacher teacher) {
-        this.id = teacher.getId();
-        this.name = teacher.getName();
-        this.email = teacher.getEmail();
-    }
+    private Role role;
 }

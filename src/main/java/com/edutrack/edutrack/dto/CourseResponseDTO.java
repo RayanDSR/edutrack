@@ -1,6 +1,5 @@
 package com.edutrack.edutrack.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,13 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CourseRequestDTO {
+public class CourseResponseDTO {
 
-    @NotBlank(message = "Course name is required")
+    private Long id;
+
     private String title;
 
-    @NotBlank(message = "Course description is required")
     private String description;
 
-    private Long teacherId;
+    private String teacherName;
 }

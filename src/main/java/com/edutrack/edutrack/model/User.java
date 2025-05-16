@@ -1,5 +1,6 @@
 package com.edutrack.edutrack.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,7 +34,10 @@ public class User implements UserDetails {
     private Long id;
 
     private String name;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -39,7 +45,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -55,9 +61,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
-    // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    // private Teacher teacherProfile;
-
-    // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    // private Student studentProfile;
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Course> courses = new ArrayList<>();
 }

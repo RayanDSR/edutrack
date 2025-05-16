@@ -4,15 +4,18 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.edutrack.edutrack.dto.CourseDTO;
-import com.edutrack.edutrack.dto.CourseRequestDTO;
-import com.edutrack.edutrack.dto.TeacherDTO;
+import com.edutrack.edutrack.dto.CourseCreateDTO;
+import com.edutrack.edutrack.dto.CourseResponseDTO;
+import com.edutrack.edutrack.dto.CourseUpdateDTO;
+import com.edutrack.edutrack.dto.UserResponseDTO;
 import com.edutrack.edutrack.exception.CourseNotFoundException;
-import com.edutrack.edutrack.exception.TeacherNotFoundException;
+import com.edutrack.edutrack.exception.UserNotFoundException;
+import com.edutrack.edutrack.mapper.CourseMapper;
+import com.edutrack.edutrack.mapper.UserMapper;
 import com.edutrack.edutrack.model.Course;
-import com.edutrack.edutrack.model.Teacher;
+import com.edutrack.edutrack.model.User;
 import com.edutrack.edutrack.repository.CourseRepository;
-import com.edutrack.edutrack.repository.TeacherRepository;
+import com.edutrack.edutrack.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,50 +23,50 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final TeacherRepository teacherRepository;
+    private final UserRepository userRepository;
+    private final CourseMapper courseMapper;
+    private final UserMapper userMapper;
 
-    public List<CourseDTO> getAllCourses() {
+    public List<CourseResponseDTO> getAllCourses() {
         return courseRepository.findAll().stream()
-            .map(CourseDTO::new)
+            .map(courseMapper::toResponseDTO)
             .toList();
     }
 
-    public CourseDTO getCourse(Long id) {
-        return new CourseDTO(courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id)));
+    public CourseResponseDTO getCourse(Long id) {
+        return courseMapper.toResponseDTO(courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id)));
     }
 
-    public CourseDTO createCourse(CourseRequestDTO request) {
-        Teacher teacher = teacherRepository.findById(request.getTeacherId())
-            .orElseThrow(() -> new TeacherNotFoundException(request.getTeacherId()));
+    public CourseResponseDTO createCourse(CourseCreateDTO request) {
+        User teacher = userRepository.findById(request.getTeacherId())
+            .orElseThrow(() -> new UserNotFoundException(request.getTeacherId()));
 
-        Course course = Course.builder()
-            .title(request.getTitle())
-            .description(request.getDescription())
-            .teacher(teacher)
-            .build();
+        Course course = courseMapper.toEntity(request, teacher);
 
-        return new CourseDTO(courseRepository.save(course));
+        return courseMapper.toResponseDTO(courseRepository.save(course));
     }
 
-    public CourseDTO updateCourse(Long id, CourseRequestDTO request) {
+    public CourseResponseDTO updateCourse(Long id, CourseUpdateDTO request) {
+        User teacher = null;
+
         Course course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
 
-        Teacher teacher = teacherRepository.findById(request.getTeacherId())
-            .orElseThrow(() -> new TeacherNotFoundException(request.getTeacherId()));
+        if (request.getTeacherId() != null) {
+            teacher = userRepository.findById(request.getTeacherId())
+                .orElseThrow(() -> new UserNotFoundException(request.getTeacherId()));
+        }
 
-        course.setTitle(request.getTitle());
-        course.setDescription(request.getDescription());
-        course.setTeacher(teacher);
+        courseMapper.updateEntity(request, course, teacher);
 
-        return new CourseDTO(courseRepository.save(course));
+        return courseMapper.toResponseDTO(courseRepository.save(course));
     }
 
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
     }
 
-    public TeacherDTO getTeacherForCourse(Long id) {
+    public UserResponseDTO getUserForCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
-        return new TeacherDTO(course.getTeacher());
+        return userMapper.toResponseDTO(course.getTeacher());
     }
 }

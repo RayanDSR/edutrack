@@ -3,6 +3,7 @@ package com.edutrack.edutrack.config;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -50,6 +51,7 @@ public class JwtService {
             .subject(userDetails.getEmail())
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + expiration))
+            .id(UUID.randomUUID().toString())
             .signWith(getSignInKey())
             .compact();
     }

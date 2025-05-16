@@ -1,6 +1,8 @@
 package com.edutrack.edutrack.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.edutrack.edutrack.model.Role;
+
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TeacherRequestDTO {
+public class UserUpdateDTO {
 
-    @NotBlank(message = "Teacher name is required")
     private String name;
 
-    @NotBlank(message = "Teacher email is required")
+    @Email
     private String email;
+
+    private String password;
+
+    private Role role;
 }

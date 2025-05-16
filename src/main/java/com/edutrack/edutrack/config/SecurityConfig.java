@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import com.edutrack.edutrack.model.Role;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -31,8 +32,16 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/courses/**").hasAnyRole(Role.TEACHER.name())
+                .requestMatchers("/courses/**").hasRole(Role.TEACHER.name())
                 .anyRequest().authenticated()
+            )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }) // 401 handler
+                .accessDeniedHandler((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                }) // 403 handler
             )
             .sessionManagement(sesssion -> sesssion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)

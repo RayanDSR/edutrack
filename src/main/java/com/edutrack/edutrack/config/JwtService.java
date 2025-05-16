@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,8 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "46288437613044114d21e7fad79837c12336202f4c85008548fb226693426f56"; // Example
+    @Value("${JWT_SECRET_KEY}")
+    private String secretKey;
     private static final long jwtExpiration = 86400000; // 1 Day
     private static final long jwtRefreshToken = 604800000; // 7 Days
 
@@ -78,7 +80,7 @@ public class JwtService {
     }
 
     private SecretKey getSignInKey() {
-        byte[] keyBytes = SECRET_KEY.getBytes();
+        byte[] keyBytes = secretKey.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

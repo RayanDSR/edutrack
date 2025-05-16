@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edutrack.edutrack.dto.CourseResponseDTO;
+import com.edutrack.edutrack.dto.UserCreateDTO;
 import com.edutrack.edutrack.dto.UserResponseDTO;
 import com.edutrack.edutrack.dto.UserUpdateDTO;
-import com.edutrack.edutrack.dto.UserCreateDTO;
 import com.edutrack.edutrack.service.UserService;
 
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserResponseDTO> getAllUses() {
+    public List<UserResponseDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 

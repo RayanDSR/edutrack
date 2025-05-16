@@ -16,16 +16,16 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserCreateDTO {
 
-    @NotBlank
+    @NotBlank(message = "User name is required")
     private String name;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "User email is required")
+    @Email(message = "User email is not valid")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "User password is required")
     private String password;
 
-    @NotNull
+    @NotNull(message = "User role is required")
     private Role role;
 }

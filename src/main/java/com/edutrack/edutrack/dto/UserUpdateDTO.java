@@ -16,7 +16,7 @@ public class UserUpdateDTO {
 
     private String name;
 
-    @Email
+    @Email(message = "User email is not valid")
     private String email;
 
     private String password;

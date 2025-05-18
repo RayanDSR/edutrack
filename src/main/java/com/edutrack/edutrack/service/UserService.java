@@ -8,6 +8,7 @@ import com.edutrack.edutrack.dto.CourseResponseDTO;
 import com.edutrack.edutrack.dto.UserCreateDTO;
 import com.edutrack.edutrack.dto.UserResponseDTO;
 import com.edutrack.edutrack.dto.UserUpdateDTO;
+import com.edutrack.edutrack.exception.UserAlreadyExistsException;
 import com.edutrack.edutrack.exception.UserNotFoundException;
 import com.edutrack.edutrack.mapper.CourseMapper;
 import com.edutrack.edutrack.mapper.UserMapper;
@@ -35,12 +36,20 @@ public class UserService {
     }
 
     public UserResponseDTO createUser(UserCreateDTO request) {
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            throw new UserAlreadyExistsException(request.getEmail());
+        });
         User user = userMapper.toEntity(request);
         return userMapper.toResponseDTO(userRepository.save(user));
     }
 
     public UserResponseDTO updateUser(Long id, UserUpdateDTO request) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        userRepository.findByEmail(request.getEmail())
+            .filter(existingUser -> !existingUser.getId().equals(id))
+            .ifPresent(existingUser -> {
+                throw new UserAlreadyExistsException(request.getEmail());
+            });
         userMapper.updateEntity(request, user);
         return userMapper.toResponseDTO(userRepository.save(user));
     }

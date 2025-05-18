@@ -34,7 +34,8 @@ public class CourseService {
     }
 
     public CourseResponseDTO getCourse(Long id) {
-        return courseMapper.toResponseDTO(courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id)));
+        Course course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
+        return courseMapper.toResponseDTO(course);
     }
 
     public CourseResponseDTO createCourse(CourseCreateDTO request) {

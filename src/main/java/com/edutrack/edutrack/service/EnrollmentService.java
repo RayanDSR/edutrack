@@ -22,30 +22,25 @@ import lombok.RequiredArgsConstructor;
 public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
-    private final AuthService authService;
     private final EnrollmentMapper enrollmentMapper;
 
-    public void enrollInCourse(EnrollmentRequestDTO enrollmentRequestDTO) {
+    public void enrollInCourse(EnrollmentRequestDTO enrollmentRequestDTO, User user) {
         Long courseId = enrollmentRequestDTO.getCourseId();
-
-        User student = authService.getCurrentUser();
 
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new CourseNotFoundException(courseId));
 
-        if (enrollmentRepository.existsByStudentAndCourse(student, course)) {
+        if (enrollmentRepository.existsByStudentAndCourse(user, course)) {
             throw new AlreadyEnrolledException("User is already enrolled in this course");
         }
 
-        Enrollment enrollment = enrollmentMapper.toEntity(student, course);
+        Enrollment enrollment = enrollmentMapper.toEntity(user, course);
 
         enrollmentRepository.save(enrollment);
     }
 
-    public List<EnrollmentResponseDTO> getMyEnrollments() {
-        User student = authService.getCurrentUser();
-
-        return enrollmentRepository.findByStudent(student).stream()
+    public List<EnrollmentResponseDTO> getMyEnrollments(User user) {
+        return enrollmentRepository.findByStudent(user).stream()
             .map(enrollmentMapper::toResponseDTO)
             .toList();
     }

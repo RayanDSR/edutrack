@@ -49,7 +49,7 @@ public class AssignmentService {
             throw new AccessDeniedException("You are not allowed to view assignments for this course.");
         }
 
-        return assignmentRepository.findByCourseId(courseId).stream()
+        return assignmentRepository.findByCourse(course).stream()
             .map(assignmentMapper::toSummaryDTO)
             .toList();
     }

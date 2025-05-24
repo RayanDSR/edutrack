@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.edutrack.edutrack.dto.AssignmentRequestDTO;
 import com.edutrack.edutrack.dto.AssignmentResponseDTO;
 import com.edutrack.edutrack.dto.AssignmentSummaryDTO;
+import com.edutrack.edutrack.exception.AccessDeniedException;
 import com.edutrack.edutrack.exception.CourseNotFoundException;
 import com.edutrack.edutrack.mapper.AssignmentMapper;
 import com.edutrack.edutrack.model.Assignment;
@@ -27,8 +28,12 @@ public class AssignmentService {
     private final CourseRepository courseRepository;
     private final AssignmentMapper assignmentMapper;
 
-    public AssignmentResponseDTO createAssignment(Long courseId, AssignmentRequestDTO assignmentRequestDTO) {
+    public AssignmentResponseDTO createAssignment(Long courseId, AssignmentRequestDTO assignmentRequestDTO, User user) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
+
+        if (!course.getTeacher().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You are not authorized to create assignments for this course.");
+        }
 
         Assignment assignment = assignmentMapper.toEntity(assignmentRequestDTO, course);
 
@@ -41,7 +46,7 @@ public class AssignmentService {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
 
         if (!isUserAllowedToViewCourse(course, currentUser)) {
-            throw new RuntimeException("You can't view this course's assignments.");
+            throw new AccessDeniedException("You are not allowed to view assignments for this course.");
         }
 
         return assignmentRepository.findByCourseId(courseId).stream()
@@ -54,7 +59,10 @@ public class AssignmentService {
             return true;
         }
 
-        return enrollmentRepository.findByCourse(course).stream()
-            .anyMatch(enrollment -> enrollment.getStudent().getId().equals(user.getId()));
+        // if (user.getRole().equals(Role.STUDENT)) {
+            return enrollmentRepository.existsByStudentAndCourse(user, course);
+        // }
+
+        // return false;
     }
 }

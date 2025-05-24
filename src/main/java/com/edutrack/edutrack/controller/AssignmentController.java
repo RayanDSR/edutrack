@@ -28,12 +28,20 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
 
     @PostMapping
-    public ResponseEntity<AssignmentResponseDTO> createAssignment( @PathVariable Long courseId, @RequestBody @Valid AssignmentRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(assignmentService.createAssignment(courseId, dto));
+    public ResponseEntity<AssignmentResponseDTO> createAssignment(
+            @PathVariable Long courseId,
+            @RequestBody @Valid AssignmentRequestDTO dto,
+            @AuthenticationPrincipal User user
+        ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(assignmentService.createAssignment(courseId, dto, user));
     }
 
     @GetMapping
-    public ResponseEntity<List<AssignmentSummaryDTO>> getAssignmentsForCourse(@PathVariable Long courseId, @AuthenticationPrincipal User user) {
+    public ResponseEntity<List<AssignmentSummaryDTO>> getAssignmentsForCourse(
+            @PathVariable Long courseId,
+            @AuthenticationPrincipal User user
+        ) {
         return ResponseEntity.ok(assignmentService.getAssignmentsForCourse(courseId, user));
     }
 }

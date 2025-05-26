@@ -2,6 +2,7 @@ package com.edutrack.edutrack.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.dto.AssignmentRequestDTO;
@@ -28,6 +29,7 @@ public class AssignmentService {
     private final CourseRepository courseRepository;
     private final AssignmentMapper assignmentMapper;
 
+    @PreAuthorize("hasAuthority('assignment:create')")
     public AssignmentResponseDTO createAssignment(Long courseId, AssignmentRequestDTO assignmentRequestDTO, User user) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
 
@@ -42,6 +44,7 @@ public class AssignmentService {
         return assignmentMapper.toResponseDTO(assignment);
     }
 
+    @PreAuthorize("hasAuthority('assignment:read:all:by:course')")
     public List<AssignmentSummaryDTO> getAssignmentsForCourse(Long courseId, User currentUser) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
 
@@ -59,10 +62,10 @@ public class AssignmentService {
             return true;
         }
 
-        // if (user.getRole().equals(Role.STUDENT)) {
+        if (user.getRole().equals(Role.STUDENT)) {
             return enrollmentRepository.existsByStudentAndCourse(user, course);
-        // }
+        }
 
-        // return false;
+        return false;
     }
 }

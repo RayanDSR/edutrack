@@ -2,6 +2,7 @@ package com.edutrack.edutrack.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.dto.EnrollmentRequestDTO;
@@ -24,6 +25,7 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
     private final EnrollmentMapper enrollmentMapper;
 
+    @PreAuthorize("hasAuthority('course:enroll')")
     public void enrollInCourse(EnrollmentRequestDTO enrollmentRequestDTO, User user) {
         Long courseId = enrollmentRequestDTO.getCourseId();
 
@@ -39,6 +41,7 @@ public class EnrollmentService {
         enrollmentRepository.save(enrollment);
     }
 
+    @PreAuthorize("hasAuthority('enrollment:read:own')")
     public List<EnrollmentResponseDTO> getMyEnrollments(User user) {
         return enrollmentRepository.findByStudent(user).stream()
             .map(enrollmentMapper::toResponseDTO)

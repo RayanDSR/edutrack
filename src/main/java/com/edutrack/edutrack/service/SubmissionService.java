@@ -2,6 +2,7 @@ package com.edutrack.edutrack.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.dto.SubmissionRequestDTO;
@@ -30,6 +31,7 @@ public class SubmissionService {
     private final EnrollmentRepository enrollmentRepository;
     private final SubmissionMapper submissionMapper;
 
+    @PreAuthorize("hasAuthority('submission:create')")
     public SubmissionResponseDTO submitAssignment(Long assignmentId, SubmissionRequestDTO dto, User student) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Assignment not found"));
@@ -50,6 +52,7 @@ public class SubmissionService {
         return submissionMapper.toResponseDTO(submission);
     }
 
+    @PreAuthorize("hasAuthority('submission:read:all:by:assignment')")
     public List<SubmissionResponseDTO> getSubmissionsForAssignment(Long assignmentId, User user) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Assignment not found"));
@@ -65,6 +68,7 @@ public class SubmissionService {
                 .toList();
     }
 
+    @PreAuthorize("hasAuthority('submission:grade')")
     public SubmissionResponseDTO gradeSubmission(Long submissionId, String grade, User teacher) {
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new EntityNotFoundException("Submission not found"));

@@ -2,6 +2,7 @@ package com.edutrack.edutrack.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.dto.CourseResponseDTO;
@@ -24,17 +25,20 @@ public class UserService {
     private final UserMapper userMapper;
     private final CourseMapper courseMapper;
 
+    @PreAuthorize("hasAuthority('user:read:all')")
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll().stream()
             .map(userMapper::toResponseDTO)
             .toList();
     }
 
+    @PreAuthorize("hasAuthority('user:read:one')")
     public UserResponseDTO getUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.toResponseDTO(user);
     }
 
+    @PreAuthorize("hasAuthority('user:create')")
     public UserResponseDTO createUser(UserCreateDTO request) {
         userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
             throw new UserAlreadyExistsException(request.getEmail());
@@ -43,6 +47,7 @@ public class UserService {
         return userMapper.toResponseDTO(userRepository.save(user));
     }
 
+    @PreAuthorize("hasAuthority('user:update')")
     public UserResponseDTO updateUser(Long id, UserUpdateDTO request) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         userRepository.findByEmail(request.getEmail())
@@ -54,10 +59,12 @@ public class UserService {
         return userMapper.toResponseDTO(userRepository.save(user));
     }
 
+    @PreAuthorize("hasAuthority('user:delete')")
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
+    @PreAuthorize("hasAuthority('course:read:all:by:user')")
     public List<CourseResponseDTO> getCoursesForUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return user.getCourses().stream()

@@ -1,11 +1,14 @@
 package com.edutrack.edutrack.service;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 
 import com.edutrack.edutrack.config.JwtService;
+import com.edutrack.edutrack.model.Token;
 import com.edutrack.edutrack.model.TokenType;
 import com.edutrack.edutrack.model.User;
 import com.edutrack.edutrack.repository.TokenRepository;
@@ -36,7 +39,7 @@ public class LogoutService implements LogoutHandler {
 
         String jwt = authHeader.substring(7);
 
-        var isTokenValid = tokenRepository.findByToken(jwt)
+        boolean isTokenValid = tokenRepository.findByToken(jwt)
                 .map(t -> !t.isExpired() && !t.isRevoked() && t.getTokenType().equals(TokenType.BEARER))
                 .orElse(false);
 
@@ -47,7 +50,7 @@ public class LogoutService implements LogoutHandler {
         String userName = jwtService.extractUsername(authHeader.substring(7));
         User user = userRepository.findByEmail(userName).orElse(null);
 
-        var validUserToken = tokenRepository.findAllValidTokenByUser(user);
+        List<Token> validUserToken = tokenRepository.findAllValidTokenByUser(user);
 
         if (validUserToken.isEmpty()) {
             return;

@@ -12,19 +12,19 @@ import com.edutrack.edutrack.model.User;
 public class CourseMapper {
     public CourseResponseDTO toResponseDTO(Course course) {
         return CourseResponseDTO.builder()
-                .id(course.getId())
-                .title(course.getTitle())
-                .description(course.getDescription())
-                .teacherName(course.getTeacher().getName())
-                .build();
+            .id(course.getId())
+            .title(course.getTitle())
+            .description(course.getDescription())
+            .teacherName(course.getTeacher().getName())
+            .build();
     }
 
     public Course toEntity(CourseCreateDTO courseCreateDTO, User teacher) {
         return Course.builder()
-                .title(courseCreateDTO.getTitle())
-                .description(courseCreateDTO.getDescription())
-                .teacher(teacher)
-                .build();
+            .title(courseCreateDTO.getTitle())
+            .description(courseCreateDTO.getDescription())
+            .teacher(teacher)
+            .build();
     }
 
     public void updateEntity(CourseUpdateDTO courseUpdateDTO, Course course, User teacher) {

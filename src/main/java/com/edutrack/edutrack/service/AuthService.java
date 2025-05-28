@@ -1,5 +1,7 @@
 package com.edutrack.edutrack.service;
 
+import java.util.List;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,7 +87,7 @@ public class AuthService {
         User user = userRepository.findByEmail(userEmail)
             .orElseThrow(() -> new InvalidTokenException("Invalid refresh token"));
 
-        var isTokenValid = tokenRepository.findByToken(refreshToken)
+        boolean isTokenValid = tokenRepository.findByToken(refreshToken)
             .map(t -> !t.isExpired() && !t.isRevoked() && t.getTokenType().equals(TokenType.REFRESH))
             .orElse(false);
 
@@ -119,7 +121,7 @@ public class AuthService {
     }
 
     private void revokeAllUserTokens(User user) {
-        var validUserToken = tokenRepository.findAllValidTokenByUser(user);
+        List<Token> validUserToken = tokenRepository.findAllValidTokenByUser(user);
 
         if (validUserToken.isEmpty()) {
             return;

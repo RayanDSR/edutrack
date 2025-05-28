@@ -17,20 +17,20 @@ public class UserMapper {
 
     public UserResponseDTO toResponseDTO(User user) {
         return UserResponseDTO.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
+            .id(user.getId())
+            .name(user.getName())
+            .email(user.getEmail())
+            .role(user.getRole())
+            .build();
     }
 
     public User toEntity(UserCreateDTO userCreateDTO) {
         return User.builder()
-                .name(userCreateDTO.getName())
-                .email(userCreateDTO.getEmail())
-                .password(passwordEncoder.encode(userCreateDTO.getPassword()))
-                .role(userCreateDTO.getRole())
-                .build();
+            .name(userCreateDTO.getName())
+            .email(userCreateDTO.getEmail())
+            .password(passwordEncoder.encode(userCreateDTO.getPassword()))
+            .role(userCreateDTO.getRole())
+            .build();
     }
 
     public void updateEntity(UserUpdateDTO userUpdateDTO, User user) {

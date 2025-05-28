@@ -1,5 +1,10 @@
 package com.edutrack.edutrack.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Permission {
     USER_CREATE("user:create"),
     USER_READ_ALL("user:read:all"),
@@ -26,12 +31,4 @@ public enum Permission {
     SUBMISSION_GRADE("submission:grade");
 
     private final String permission;
-
-    Permission(String permission) {
-        this.permission = permission;
-    }
-
-    public String getPermission() {
-        return permission;
-    }
 }

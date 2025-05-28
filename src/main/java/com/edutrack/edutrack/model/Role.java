@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Role {
     STUDENT(
         Set.of(
@@ -56,14 +61,6 @@ public enum Role {
     );
 
     private final Set<Permission> permissions;
-
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
-    }
-
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
 
     // This method will generate the GrantedAuthority list for Spring Security
     public Set<SimpleGrantedAuthority> getGrantedAuthorities() {

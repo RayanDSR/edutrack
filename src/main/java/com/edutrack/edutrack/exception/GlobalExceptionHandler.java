@@ -13,27 +13,27 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntityAlreadyExistsException.class)
     public ResponseEntity<String> handleEntityAlreadyExists(EntityAlreadyExistsException ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<String> handleInvalidToken(InvalidTokenException ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDenied(AccessDeniedException ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
     public ResponseEntity<String> handleSpringSecurityAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -46,6 +46,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleOtherException(Exception ex) {
-        return new ResponseEntity<String>("Something went wrong: " + ex.getMessage() + ex.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Something went wrong: " + ex.getMessage() + ex.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

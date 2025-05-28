@@ -47,7 +47,7 @@ public class LogoutService implements LogoutHandler {
         String userName = jwtService.extractUsername(authHeader.substring(7));
         User user = userRepository.findByEmail(userName).orElse(null);
 
-        var validUserToken = tokenRepository.findAllValidTokenByUser(user.getId());
+        var validUserToken = tokenRepository.findAllValidTokenByUser(user);
 
         if (validUserToken.isEmpty()) {
             return;
